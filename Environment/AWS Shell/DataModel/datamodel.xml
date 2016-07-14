@@ -353,6 +353,18 @@
       </Models>
       <Categories />
     </ResourceFamily>
+    <ResourceFamily Name="testfamily" IsMappableContainer="false" IsMappable="false" IsConnectable="false" IsLicenseCheckRequired="false" IsAllConnectedContainer="false" IsLockedByDefault="false" AcceptsMultipleConnections="false" Description="" SupportsMulticastMapping="false" SupportsLoopbackMapping="false" IsPowerSwitch="false" IsConsoleServer="false" ResourceType="Resource" Searchable="true">
+      <AttachedAttributes />
+      <AttributeValues />
+      <Models>
+        <ResourceModel Name="testmodel" Description="" SupportsConcurrentCommands="false">
+          <AttachedAttributes />
+          <AttributeValues />
+          <ParentModels />
+          <Drivers />
+        </ResourceModel>
+      </Models>
+    </ResourceFamily>
   </ResourceFamilies>
   <DriverDescriptors>
     <DriverDescriptor Name="Deployment Orchestrator" Description="Deploy App" DriverType="PythonDriver" />

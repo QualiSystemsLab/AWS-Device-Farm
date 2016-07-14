@@ -23,11 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="PythonDriver.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="PythonDriver.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/AWS Server Driver/PythonDriver.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="34">
-              <caret line="235" column="17" selection-start-line="235" selection-start-column="17" selection-end-line="235" selection-end-column="17" />
+            <state relative-caret-position="663">
+              <caret line="314" column="0" selection-start-line="314" selection-start-column="0" selection-end-line="314" selection-end-column="0" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -77,11 +77,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="datamodel.xml" pinned="false" current-in-tab="false">
+      <file leaf-file-name="datamodel.xml" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/AWS Shell/DataModel/datamodel.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="17" selection-start-line="0" selection-start-column="16" selection-end-line="0" selection-end-column="17" />
+            <state relative-caret-position="370">
+              <caret line="355" column="0" selection-start-line="355" selection-start-column="0" selection-end-line="355" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -150,13 +150,13 @@
         <option value="$PROJECT_DIR$/btest.py" />
         <option value="$PROJECT_DIR$/AWS Connected Commands/AWS Connected Commands/AWS_Python_Connected_Driver/PythonDriver.py" />
         <option value="$PROJECT_DIR$/install_device_farm_app.py" />
-        <option value="$PROJECT_DIR$/AWS Shell/DataModel/datamodel.xml" />
         <option value="$PROJECT_DIR$/AWS Shell/Resources/AWS us-west-2.xml" />
         <option value="$PROJECT_DIR$/AWS Device Farm Installation/drivermetadata.xml" />
         <option value="$PROJECT_DIR$/AWS Shell/Resource Scripts/install_device_farm_app.py" />
         <option value="$PROJECT_DIR$/AWS Shell/Topologies/AWS Shell.xml" />
         <option value="$PROJECT_DIR$/AWS Shell/App Templates/Mobile Device.xml" />
         <option value="$PROJECT_DIR$/AWS Server Driver/PythonDriver.py" />
+        <option value="$PROJECT_DIR$/AWS Shell/DataModel/datamodel.xml" />
       </list>
     </option>
   </component>
@@ -191,6 +191,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
+      <pane id="Scratches">
+        <subPane />
+      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -253,11 +257,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches">
-        <subPane />
-      </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -948,14 +948,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AWS Shell/DataModel/datamodel.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="17" selection-start-line="0" selection-start-column="16" selection-end-line="0" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/AWS Shell/App Templates/Mobile Device.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
@@ -992,11 +984,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/AWS Server Driver/PythonDriver.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="235" column="17" selection-start-line="235" selection-start-column="17" selection-end-line="235" selection-end-column="17" />
+        <state relative-caret-position="663">
+          <caret line="314" column="0" selection-start-line="314" selection-start-column="0" selection-end-line="314" selection-end-column="0" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AWS Shell/DataModel/datamodel.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="370">
+          <caret line="355" column="0" selection-start-line="355" selection-start-column="0" selection-end-line="355" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
