@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                WebView wv = (WebView) findViewById(R.id.webView);
                 String backendUrl = "http://failed";
                 try {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(getAssets().open("backend_url.txt")));
@@ -40,12 +41,18 @@ public class MainActivity extends AppCompatActivity {
                         ans += line + "\n";
                     }
                     backendUrl = ans.trim().split("\n")[0].trim();
+                    wv.loadUrl(backendUrl);
+                    ((TextView)findViewById(R.id.textView)).setText(backendUrl);
                 } catch (IOException e) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(e.toString() + "\n");
+                    for (StackTraceElement el : e.getStackTrace()) {
+                        sb.append(el.toString() + "\n");
+                    }
+                    wv.loadData(sb.toString(), "text/plain", "UTF-8");
+
                     e.printStackTrace();
                 }
-                WebView wv = (WebView) findViewById(R.id.webView);
-                wv.loadUrl(backendUrl);
-                ((TextView)findViewById(R.id.textView)).setText(backendUrl);
                 Snackbar.make(view, "Requested '" + backendUrl + "'", Snackbar.LENGTH_LONG).setAction("Action", null).show();
             }
         });

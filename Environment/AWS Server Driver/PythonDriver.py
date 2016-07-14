@@ -1,3 +1,4 @@
+import re
 import tempfile
 
 import json
@@ -229,23 +230,58 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         # apkbuf.seek(0)
         f = tempfile.NamedTemporaryFile(suffix='.apk', delete=False)
 
-    # with open(r'c:\temp\patched2.apk', 'wb') as f:
+        # with open(r'c:\temp\patched2.apk', 'wb') as f:
         f.write(r.content)
         r.close()
         f.close()
         # f.write(apkbuf.read())
         # apkbuf.seek(0)
 
+        # with open(f.name, 'rb') as g:
+        #     apkdata = bytearray(g.read())
+
+
+        api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
+
+        res = api.GetReservationDetails(context.reservation.reservation_id).ReservationDescription
+
         z = zipfile.ZipFile(f.name, mode="a", compression=zipfile.ZIP_DEFLATED)
+
         if apk_asset_updates:
             for fn, text in json.loads(apk_asset_updates).items():
+                while True:
+                    m = re.search(r'([^{]*)\{([^}]*)\}(.*)', text)
+                    if not m:
+                        break
+                    expr = m.group(2)
+                    objref, attrname = expr.split('.')
+                    objref = objref.replace('(', '').replace(')', '')
+                    if '=' in objref:
+                        familymodelname, objid = objref.split('=')
+                    else:
+                        familymodelname = 'name'
+                        objid = objref
+                    ans = 'EXPR_FAILED(' + expr + ')'
+                    for resource in res.Resources:
+                        if (familymodelname.lower() == 'family' and resource.ResourceFamilyName == objid) or \
+                                (familymodelname.lower() == 'model' and resource.ResourceModelName == objid) or \
+                                (familymodelname.lower() == 'name' and resource.Name == objid):
+                            if attrname.lower() == 'address':
+                                ans = resource.FullAddress
+                            else:
+                                for attr in api.GetResourceDetails(resource.Name).ResourceAttributes:
+                                    if attr.Name == attrname:
+                                        ans = attr.Value
+                            break
+                    text = m.group(1) + ans + m.group(3)
                 z.writestr(fn, text)
         z.close()
 
-        with open(f.name, 'rb') as g:
-            apkdata = bytearray(g.read())
+        os.system('java -jar ' + os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) + '\\sign.jar ' + f.name)
 
-        api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
+        with open(f.name.replace('.apk', '.s.apk'), 'rb') as g:
+            signed_apk_data = bytearray(g.read())
+
 
         api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'upload_app called')
 
@@ -273,7 +309,7 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         #     d = f.read()
         r2 = requests.put(upload_url,
                           headers={'Content-Type': 'application/octet-stream'},
-                          data=apkdata)
+                          data=signed_apk_data)
         if r2.status_code >= 300:
             raise Exception('Error ' + str(r2.status_code) + ' in PUT to ' + upload_url)
 

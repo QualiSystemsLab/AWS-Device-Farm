@@ -2,8 +2,7 @@
 
 Note: Every CloudShell server needs the following changes:
 
-1.	Insert a line in ServerUniversalSettings.xml: 
- key name="AWS Remote Phone" pattern="http://{QsPortalAddress}/Content/devicefarm/aws2.html?address={Address}&amp;endpoint={AWSRemoteDeviceEndpoint}{AWSRemoteDeviceEndpoint2}" icon-key="RDP" 
+1.	Insert a line in ServerUniversalSettings.xml: key name="AWS Remote Phone" pattern="http://{QsPortalAddress}/Content/devicefarm/aws2.html?address={Address}&amp;endpoint={AWSRemoteDeviceEndpoint}{AWSRemoteDeviceEndpoint2}" icon-key="RDP" />
 
 2.	Put aws2.html under C:\Program Files (x86)\QualiSystems\CloudShell\Portal\Content\devicefarm
 

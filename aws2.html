@@ -8,41 +8,7 @@ gg = {}
 function docommand(g1) {
     endpoint = gg['endpoint']
     csock = gg['csock']
-    if(!csock) {
-        csock = new WebSocket(endpoint + "&path=control")
-        gg['csock'] = csock
-
-        csock.onopen = function(event) {
-            console.log(event)
-            console.log('Control socket opened')
-            g1(csock)
-            gg['poll3'] = setInterval(function() {
-                j = gg['csock']
-                if(j) {
-                    console.log('try to send blank')
-                    j.send('{"message":"StatusMessage","parameters":{}}')
-                }
-            }, 1000)
-        }
-        csock.onclose = function(event) {
-            console.log(event)
-            console.log('Control socket closed')
-            gg['csock'] = null
-            clearInterval(gg['poll3'])
-            gg['poll3'] = null
-        }
-        csock.onerror = function(event) {
-            console.log(event)
-            console.log('Control socket error')
-            gg['csock'] = null
-        }
-        csock.onmessage = function(event) {
-            console.log('Control socket received ' + event.data)
-            document.querySelector('#status').innerHTML=event.data + '<br>Last update:' + new Date()
-        }
-    } else {
-        g1(csock)
-    }
+    g1(csock)
 }
 
 function main1() {
@@ -119,9 +85,7 @@ function f1() {
     vsock.onopen = function(event) {
         console.log(event)
         console.log('Video socket opened')
-        gg['poll2'] = setInterval(function() {
-            vsock.send('a')
-        }, 200)
+        vsock.send('a')
     }
     vsock.onclose = function(event) {
         console.log(event)
@@ -140,7 +104,53 @@ function f1() {
         document.querySelector("#phoneimage").src = imageUrl;
         //document.querySelector('#status').innerHTML='CONNECTED to remote phone<br>Last update:' + new Date()
         // : result=' + gg['result'] + ' status=' + gg['status'] + '
+
+        var d = new Date();
+		var n = d.getTime();
+		
+		document.querySelector('#rate').innerHTML=(1000.0 / (n - gg['lasttime'] + 1)) + ' fps'
+
+		gg['lasttime'] = n
+
+		gg['vsock'].send('a')
+/*		setTimeout(function() {
+			gg['vsock'].send('a')
+		}, 10)
+		*/
     }
+
+    csock = new WebSocket(endpoint + "&path=control")
+    gg['csock'] = csock
+
+    csock.onopen = function(event) {
+        console.log(event)
+        console.log('Control socket opened')
+        g1(csock)
+        gg['poll3'] = setInterval(function() {
+            j = gg['csock']
+            if(j) {
+                console.log('try to send blank')
+                j.send('{"message":"StatusMessage","parameters":{}}')
+            }
+        }, 1000)
+    }
+    csock.onclose = function(event) {
+        console.log(event)
+        console.log('Control socket closed')
+        gg['csock'] = null
+        clearInterval(gg['poll3'])
+        gg['poll3'] = null
+    }
+    csock.onerror = function(event) {
+        console.log(event)
+        console.log('Control socket error')
+        gg['csock'] = null
+    }
+    csock.onmessage = function(event) {
+        console.log('Control socket received ' + event.data)
+        document.querySelector('#status').innerHTML=event.data + '<br>Last update:' + new Date()
+    }
+
 }
 
 </script>
@@ -151,6 +161,7 @@ function f1() {
 <body onload="main1()">
 <img id="phoneimage" src="quali.jpg"/>
 <div id="status">No status</div>
+<div id="rate">No rate</div>
 <input type="button" value="Back" id="back" />
 <input type="button" value="Home" id="home" />
 
