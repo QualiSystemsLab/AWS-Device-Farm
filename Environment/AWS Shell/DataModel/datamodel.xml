@@ -353,11 +353,11 @@
       </Models>
       <Categories />
     </ResourceFamily>
-    <ResourceFamily Name="testfamily" IsMappableContainer="false" IsMappable="false" IsConnectable="false" IsLicenseCheckRequired="false" IsAllConnectedContainer="false" IsLockedByDefault="false" AcceptsMultipleConnections="false" Description="" SupportsMulticastMapping="false" SupportsLoopbackMapping="false" IsPowerSwitch="false" IsConsoleServer="false" ResourceType="Resource" Searchable="true">
+    <ResourceFamily Name="test backend family" IsMappableContainer="false" IsSearchable="true" IsMappable="false" IsConnectable="false" IsLicenseCheckRequired="false" IsAllConnectedContainer="false" IsLockedByDefault="false" AcceptsMultipleConnections="false" Description="" SupportsMulticastMapping="false" SupportsLoopbackMapping="false" IsPowerSwitch="false" IsConsoleServer="false" ResourceType="Resource" >
       <AttachedAttributes />
       <AttributeValues />
       <Models>
-        <ResourceModel Name="testmodel" Description="" SupportsConcurrentCommands="false">
+        <ResourceModel Name="test backend model" Description="" SupportsConcurrentCommands="false">
           <AttachedAttributes />
           <AttributeValues />
           <ParentModels />

@@ -6,6 +6,7 @@
   </Details>
   <Resources>
     <Resource PositionX="604" PositionY="99" Name="AWS us-west-2" Shared="true" />
+    <Resource PositionX="604" PositionY="399" Name="test backend" Shared="true" />
   </Resources>
   <Services/>
   <Apps>
@@ -34,7 +35,7 @@
               <Attributes>
                 <Attribute Name="AWS EC2" Value="AWS us-west-2" />
                 <Attribute Name="APK URL" Value="https://github.com/ericrqs/testapk/raw/master/app-debug.apk" />
-                <Attribute Name="APK Asset Updates" Value="{&quot;assets/backend_url.txt&quot;:&quot;http://{(model=testmodel).address}&quot;}" />
+                <Attribute Name="APK Asset Updates" Value="{&quot;assets/backend_url.txt&quot;:&quot;http://{(model=test backend model).address}&quot;}" />
               </Attributes>
               <Commands>
                 <Command Name="install_device_farm_app" CommandType="Script">
