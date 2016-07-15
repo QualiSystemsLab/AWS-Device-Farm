@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="FacetManager">
+    <facet type="Python" name="Python">
+      <configuration sdkName="Python 2.7.10 (C:\ProgramData\QualiSystems\QsPython27\python.exe)" />
+    </facet>
+    <facet type="android" name="Android">
+      <configuration>
+        <option name="GEN_FOLDER_RELATIVE_PATH_APT" value="/../../AWS-Device-Farm/gen" />
+        <option name="GEN_FOLDER_RELATIVE_PATH_AIDL" value="/../../AWS-Device-Farm/gen" />
+        <option name="MANIFEST_FILE_RELATIVE_PATH" value="/../../AWS-Device-Farm/AndroidManifest.xml" />
+        <option name="RES_FOLDER_RELATIVE_PATH" value="/../../AWS-Device-Farm/res" />
+        <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/../../AWS-Device-Farm/assets" />
+        <option name="LIBS_FOLDER_RELATIVE_PATH" value="/../../AWS-Device-Farm/libs" />
+        <option name="PROGUARD_LOGS_FOLDER_RELATIVE_PATH" value="/../../AWS-Device-Farm/proguard_logs" />
+      </configuration>
+    </facet>
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" generated="true" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Python 2.7.10 (C:\ProgramData\QualiSystems\QsPython27\python.exe) interpreter library" level="application" />
+  </component>
+</module>
