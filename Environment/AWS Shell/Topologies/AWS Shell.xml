@@ -34,8 +34,8 @@
             <InstallationService Name="AWS Mobile Device Installation">
               <Attributes>
                 <Attribute Name="AWS EC2" Value="AWS us-west-2" />
-                <Attribute Name="APK URL" Value="https://github.com/ericrqs/testapk/raw/master/app-debug.apk" />
-                <Attribute Name="APK Asset Updates" Value="{&quot;assets/backend_url.txt&quot;:&quot;http://{(model=test backend model).address}&quot;}" />
+                <Attribute Name="APK URL" Value="https://github.com/QualiSystemsLab/AWS-Device-Farm/raw/master/quali-demo-app.apk" />
+                <Attribute Name="APK Asset Updates" Value="{&quot;assets/backend_url.txt&quot;:&quot;http://{(model=testmodel).address}&quot;}" />
               </Attributes>
               <Commands>
                 <Command Name="install_device_farm_app" CommandType="Script">

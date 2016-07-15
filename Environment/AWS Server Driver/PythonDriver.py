@@ -277,7 +277,9 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
                 z.writestr(fn, text)
         z.close()
 
-        os.system('java -jar ' + os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) + '\\sign.jar ' + f.name)
+        os.system(r'C:\ProgramData\Oracle\Java\javapath\java.exe -jar ' +
+                  os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) +
+                  '\\sign.jar ' + f.name)
 
         with open(f.name.replace('.apk', '.s.apk'), 'rb') as g:
             signed_apk_data = bytearray(g.read())
