@@ -3,7 +3,6 @@
   <Layout>
       <Category Name="Deployment">
           <Command Description="Deploy from AWS Device Farm" DisplayName="Deploy From Device Farm" Name="deploy_from_device_farm" Tags="allow_unreserved" />
-          <Command Description="" DisplayName="Delete VM" Name="destroy_vm" Tags="remote_app_management,allow_shared" />
       </Category>
       <Category Name="Installation">
           <Command Description="Install App on AWS Device Farm device" DisplayName="Install App on AWS Device Farm device" Name="upload_app" Tags="allow_shared" />
@@ -12,8 +11,7 @@
       <Command Description="Refresh the IP of an Instance" DisplayName="Refresh IP" EnableCancellation="true" Name="remote_refresh_ip" Tags="remote_connectivity,allow_shared" />
     </Category>
     <Category Name="App Management">
-        <Command Description="Terminate the Device Reservation" DisplayName="End Device Reservation" Name="destroy_device" Tags="remote_app_management,allow_shared" />
-        <!--<Command Description="Upload App to the Device" DisplayName="Upload" Name="upload_app" Tags="remote_app_management,allow_shared" />-->
+        <Command Description="" DisplayName="Delete" Name="destroy_vm" Tags="remote_app_management,allow_shared" />
     </Category>
     <Category Name="Hidden Commands">
       <Command Description="" DisplayName="Delete VM Only" Name="destroy_vm_only" Tags="remote_app_management" />

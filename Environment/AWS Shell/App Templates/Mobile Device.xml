@@ -4,7 +4,6 @@
     <AppResources>
       <AppResource ModelName="AWS Device Farm App Model" Driver="">
         <Attributes>
-          <Attribute Name="AWSDeviceFarmSessionARN" Value="" />
           <Attribute Name="AWSRemoteDeviceEndpoint" Value="" />
           <Attribute Name="AWSRemoteDeviceEndpoint2" Value="" />
         </Attributes>

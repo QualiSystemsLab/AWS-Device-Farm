@@ -25,7 +25,8 @@ class DeployFromImage(ResourceDriverInterface):
                          in context.resource.attributes.items()
                          if attributeName != "AWS EC2"]
 
-        # with open(r'c:\temp\install_aws_app.log', 'a') as f:
+        # with open(r'c:\temp\install_device_farm_app.log', 'a') as f:
+        #     f.write('context:' + str(context) + '\n')
         #     f.write('name:' + str(context.resource.name) + '\n')
         #     f.write('aws ec2:' + str(context.resource.attributes["AWS EC2"]) + '\n')
         #     f.write('attributes:' + str(context.resource.attributes) + '\n')

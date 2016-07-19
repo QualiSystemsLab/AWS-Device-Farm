@@ -67,12 +67,6 @@
         <Rule Name="Setting" />
       </Rules>
     </AttributeInfo>
-    <AttributeInfo Name="AWSDeviceFarmSessionARN" Type="String" DefaultValue="" IsReadOnly="false">
-      <Rules>
-        <Rule Name="Configuration" />
-        <Rule Name="Setting" />
-      </Rules>
-    </AttributeInfo>
     <AttributeInfo Name="AWSRemoteDeviceEndpoint2" Type="String" DefaultValue="" IsReadOnly="false">
       <Rules>
         <Rule Name="Configuration" />
@@ -175,16 +169,12 @@
             <AttachedAttribute Name="AWSRemoteDeviceEndpoint" IsOverridable="true" IsLocal="true">
               <AllowedValues />
             </AttachedAttribute>
-            <AttachedAttribute Name="AWSDeviceFarmSessionARN" IsOverridable="true" IsLocal="true">
-              <AllowedValues />
-            </AttachedAttribute>
             <AttachedAttribute Name="AWSRemoteDeviceEndpoint2" IsOverridable="true" IsLocal="true">
               <AllowedValues />
             </AttachedAttribute>
           </AttachedAttributes>
           <AttributeValues>
             <AttributeValue Name="AWSRemoteDeviceEndpoint" Value="" />
-            <AttributeValue Name="AWSDeviceFarmSessionARN" Value="" />
             <AttributeValue Name="AWSRemoteDeviceEndpoint2" Value="" />
           </AttributeValues>
           <ParentModels />

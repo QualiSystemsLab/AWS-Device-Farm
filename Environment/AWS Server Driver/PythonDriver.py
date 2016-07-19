@@ -26,9 +26,9 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         ctor must be without arguments, it is created with reflection at run time
         """
         self._endpoint = ''
-        self._session_arn = ''
         self._app_arn = ''
         self._project_arn = ''
+        self._session_arn = ''
 
     def initialize(self, context):
         pass
@@ -53,7 +53,6 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
 
         api.SetAttributeValue(context.remote_endpoints[0].fullname.split('/')[0], 'AWSRemoteDeviceEndpoint', ep1)
         api.SetAttributeValue(context.remote_endpoints[0].fullname.split('/')[0], 'AWSRemoteDeviceEndpoint2', ep2)
-        api.SetAttributeValue(context.remote_endpoints[0].fullname.split('/')[0], 'AWSDeviceFarmSessionARN', self._session_arn)
 
         return 'noaddr'
 
@@ -133,11 +132,8 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         return df
 
     def deploy_from_device_farm(self, context, device_model, inbound_ports, instance_type, outbound_ports, app_name):
-        # api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
+        # # api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
 
-        # self._endpoint = 'fake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpoint'
-        # self._session_arn = 'fake_session_arn'
-        # self._app_arn = 'fake_app_arn'
         df_session = self._connect_amazon(context)
 
         device_arn = ''
@@ -183,7 +179,11 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         if status != 'RUNNING':
             raise Exception('Remote device session did not start within 5 minutes')
 
-        result = DeployResult(app_name, 'no-uuid', context.resource.fullname, "", 60, True, True, True, True, False)
+        # self._endpoint = 'fake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpoint'
+        # self._app_arn = 'fake_app_arn'
+        # session_arn = 'fake_session_arn'
+
+        result = DeployResult(app_name, self._session_arn, context.resource.fullname, "", 60, True, True, True, True, False)
         rv = set_command_result(result, False)
         # # with open(r'c:\temp\a.txt', 'a') as f:
         # #     f.write(rv + '\n\n')
@@ -210,6 +210,9 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
     def disconnect(self, context, ports, network_name):
         return "Not Implemented"
 
+    def destroy_vm(self, context, ports):
+        return self.destroy_device(context, ports)
+
     def destroy_device(self, context, ports):
         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
         destroy_result = self.destroy_vm_only(context, ports)
@@ -221,25 +224,11 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
 
     def upload_app(self, context, ports, apk_url, apk_asset_updates):
         r = requests.get(apk_url)
-        # apkbuf = io.BytesIO(r.content)
-        # z = zipfile.ZipFile(apkbuf, mode="a", compression=zipfile.ZIP_DEFLATED)
-        # if apk_asset_updates:
-        #     for fn, text in json.loads(apk_asset_updates).items():
-        #         z.writestr(fn, text)
-        # z.close()
-        # apkbuf.seek(0)
         f = tempfile.NamedTemporaryFile(suffix='.apk', delete=False)
 
-        # with open(r'c:\temp\patched2.apk', 'wb') as f:
         f.write(r.content)
         r.close()
         f.close()
-        # f.write(apkbuf.read())
-        # apkbuf.seek(0)
-
-        # with open(f.name, 'rb') as g:
-        #     apkdata = bytearray(g.read())
-
 
         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
 
@@ -291,13 +280,6 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
 
         df_session = self._connect_amazon(context)
 
-        # apk_fullpath = "C:\\Users\\ericr\\Downloads\\HelloWorld_v1.0_apkpure.com.apk"
-        # apk_basename = 'hello2.apk'
-
-        # for apk_fullpath, apk_basename, t in [
-        #     (apk_filename, apk_filename.replace('\\', '/').split('/')[-1], 'ANDROID_APP'),
-        #     (r'c:\apk_repo\a.zip', 'a.zip', 'EXTERNAL_DATA')]:
-        # apk_fullpath = apk_url
         apk_basename = apk_url.replace('\\', '/').split('/')[-1]
 
         r = df_session.create_upload(contentType='application/octet-stream',
@@ -307,8 +289,6 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         upload_url = r['upload']['url']
         self._app_arn = r['upload']['arn']
 
-        # with open(apk_fullpath, 'rb') as f:
-        #     d = f.read()
         r2 = requests.put(upload_url,
                           headers={'Content-Type': 'application/octet-stream'},
                           data=signed_apk_data)
@@ -325,13 +305,28 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         if status != 'SUCCEEDED':
             raise Exception('App upload failed or did not complete within 5 minutes. Status=' + status)
 
+        # with open(r'c:\temp\vmdet.txt', 'w') as f:
+        #     f.write('context:' + str(context) + '\n')
+        #     for name, o in inspect.getmembers(context):
+        #         f.write('context member>' + name + '\n')
+        #
+        #     # vmdet = api.GetResourceDetails(context.connectivity.resource.fullname).VmDetails
+        #     f.write('endpoint: ' + context.remote_endpoints[0].fullname.split('/')[0])
+        #
+        #     vmdet = api.GetResourceDetails(context.remote_endpoints[0].fullname.split('/')[0]).VmDetails
+        #     f.write(str(vmdet) + '\n\n')
+        #     for name, o in inspect.getmembers(vmdet):
+        #         f.write('>' + name + '\n')
+        #     uid = vmdet.UID
+        #     f.write(str(uid) + '\n\n')
+
         df_session.install_to_remote_access_session(appArn=self._app_arn, remoteAccessSessionArn=self._session_arn)
         return "success"
 
     def destroy_vm_only(self, context, ports):
         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
 
-        session_arn = api.GetAttributeValue(context.remote_endpoints[0].fullname.split('/')[0], "AWSDeviceFarmSessionARN").Value
+        session_arn = api.GetResourceDetails(context.remote_endpoints[0].fullname.split('/')[0]).VmDetails.UID
 
         df_session = self._connect_amazon(context)
         df_session.stop_remote_access_session(
