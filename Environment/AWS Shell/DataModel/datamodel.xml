@@ -204,14 +204,14 @@
             </AttachedAttribute>
           </AttachedAttributes>
           <AttributeValues>
-            <AttributeValue Name="AWS EC2" Value="AWS us-west-2" />
+            <AttributeValue Name="AWS EC2" Value="AWS us-west-2 Device Farm" />
             <AttributeValue Name="Inbound Ports" Value="" />
             <AttributeValue Name="Outbound Ports" Value="" />
             <AttributeValue Name="Device Model" Value="Samsung Galaxy S3 (Sprint) - ANDROID 4.4.2" />
           </AttributeValues>
           <ParentModels />
           <Drivers>
-            <DriverName>AWS EC2 Instance</DriverName>
+            <DriverName>AWS Device Farm Deployment</DriverName>
           </Drivers>
           <Scripts />
         </ResourceModel>
@@ -237,7 +237,7 @@
             </AttachedAttribute>
           </AttachedAttributes>
           <AttributeValues>
-            <AttributeValue Name="AWS EC2" Value="AWS us-west-2" />
+            <AttributeValue Name="AWS EC2" Value="AWS us-west-2 Device Farm" />
             <AttributeValue Name="APK URL" Value="" />
             <AttributeValue Name="APK Asset Updates" Value="" />
           </AttributeValues>
@@ -336,7 +336,7 @@
           </AttributeValues>
           <ParentModels />
           <Drivers>
-            <DriverName>AWS Server Driver</DriverName>
+            <DriverName>AWS Device Farm Server Driver</DriverName>
           </Drivers>
           <Scripts />
         </ResourceModel>
@@ -358,8 +358,8 @@
   </ResourceFamilies>
   <DriverDescriptors>
     <DriverDescriptor Name="Deployment Orchestrator" Description="Deploy App" DriverType="PythonDriver" />
-    <DriverDescriptor Name="AWS Server Driver" Description="This is a sample driver" DriverType="PythonDriver" />
-    <DriverDescriptor Name="AWS EC2 Instance" Description="Start AWS Device Farm Session" DriverType="PythonDriver" />
+    <DriverDescriptor Name="AWS Device Farm Server Driver" Description="This is a sample driver" DriverType="PythonDriver" />
+    <DriverDescriptor Name="AWS Device Farm Deployment" Description="Start AWS Device Farm Session" DriverType="PythonDriver" />
     <DriverDescriptor Name="AWS Device Farm Installation" Description="Install apk on AWS Device Farm" DriverType="PythonDriver" />
   </DriverDescriptors>
   <ScriptDescriptors>

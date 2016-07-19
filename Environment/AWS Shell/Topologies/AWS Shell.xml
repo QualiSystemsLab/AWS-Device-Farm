@@ -5,7 +5,7 @@
     <Diagram Zoom="0.8" />
   </Details>
   <Resources>
-    <Resource PositionX="604" PositionY="99" Name="AWS us-west-2" Shared="true" />
+    <Resource PositionX="604" PositionY="99" Name="AWS us-west-2 Device Farm" Shared="true" />
     <Resource PositionX="604" PositionY="399" Name="test backend" Shared="true" />
   </Resources>
   <Services/>
@@ -24,7 +24,7 @@
           <DeploymentPath Name="AWS Mobile Device + AWS Mobile Device Installation" Default="true">
             <DeploymentService Name="AWS Mobile Device">
               <Attributes>
-                <Attribute Name="AWS EC2" Value="AWS us-west-2" />
+                <Attribute Name="AWS EC2" Value="AWS us-west-2 Device Farm" />
                 <Attribute Name="Inbound Ports" Value="" />
                 <Attribute Name="Outbound Ports" Value="" />
                 <Attribute Name="Device Model" Value="Samsung Galaxy S3 (Sprint) - ANDROID 4.4.2" />
@@ -32,7 +32,7 @@
             </DeploymentService>
             <InstallationService Name="AWS Mobile Device Installation">
               <Attributes>
-                <Attribute Name="AWS EC2" Value="AWS us-west-2" />
+                <Attribute Name="AWS EC2" Value="AWS us-west-2 Device Farm" />
                 <Attribute Name="APK URL" Value="https://github.com/QualiSystemsLab/AWS-Device-Farm/raw/master/quali-demo-app.apk" />
                 <Attribute Name="APK Asset Updates" Value="{&quot;assets/backend_url.txt&quot;:&quot;http://{(model=test backend model).address}&quot;}" />
               </Attributes>

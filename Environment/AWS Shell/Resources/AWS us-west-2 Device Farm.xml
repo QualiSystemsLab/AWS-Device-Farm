@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ResourceInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="AWS us-west-2" FolderFullPath="Physical Layer" Address="us-west-2" ModelName="AWS Regional Server" Driver="AWS Server Driver" xmlns="http://schemas.qualisystems.com/ResourceManagement/ResourceSchema.xsd">
+<ResourceInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              Name="AWS us-west-2 Device Farm"
+              FolderFullPath="Physical Layer"
+              Address="us-west-2"
+              ModelName="AWS Regional Server"
+              Driver="AWS Device Farm Server Driver" xmlns="http://schemas.qualisystems.com/ResourceManagement/ResourceSchema.xsd">
   <Attributes>
     <Attribute Name="Lab" Value="Global" />
     <Attribute Name="AWS default subnet" Value="subnet-b2f3c3d7" />

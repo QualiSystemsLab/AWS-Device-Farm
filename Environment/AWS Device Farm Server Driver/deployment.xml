@@ -26,7 +26,7 @@
                  may be a path to a directory, in which case all the files and folders under the directory are added into the driver's zip file.
                  if the <sources> element is not specified, all the files under the project are added to the driver's zip file -->
 
-            <targetName>AWS Server Driver</targetName>
+            <targetName>AWS Device Farm Server Driver</targetName>
         </driver>
 
     </drivers>
