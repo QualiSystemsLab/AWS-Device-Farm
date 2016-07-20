@@ -12,7 +12,7 @@ class DeployFromImage(ResourceDriverInterface):
     def initialize(self, context):
         pass
 
-    def install_device_farm_app(self, context, Name=None):
+    def Install(self, context):
         """
         Installs app
         :type context: drivercontext.ResourceCommandContext

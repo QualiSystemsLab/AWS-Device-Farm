@@ -4,7 +4,6 @@ import tempfile
 import json
 import zipfile
 
-import io
 from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
 from cloudshell.api.cloudshell_api import CloudShellAPISession
 from cloudshell.cp.vcenter.common.utilites.command_result import set_command_result
@@ -37,14 +36,6 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         """
         :type context drivercontext.ResourceRemoteCommandContext
         """
-        # df = self._connect_amazon(context)
-        # instance = self._get_instance(context, self._get_connected_instance_id(context), ec2)
-        # if instance is not None:
-        #     address = instance.public_ip_address
-        #     api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
-        #     api.UpdateResourceAddress(context.remote_endpoints[0].fullname.split('/')[0],address)
-        #
-        #     return address
         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
         # api.UpdateResourceAddress(context.remote_endpoints[0].fullname.split('/')[0],address)
 
@@ -64,17 +55,6 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
 
         :type context drivercontext.ResourceRemoteCommandContext
         """
-        # df = self._connect_amazon(context)
-        # instance = self._get_instance(context, self._get_connected_instance_id(context), ec2)
-        # if instance is not None:
-        #     stop_response = instance.stop()
-        #     instance.wait_until_stopped()
-        #
-        #     if stop_response["ResponseMetadata"]["HTTPStatusCode"] >= 200 and stop_response["ResponseMetadata"][
-        #         "HTTPStatusCode"] < 300:
-        #         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
-        #         api.SetResourceLiveStatus(context.remote_endpoints[0].fullname.split('/')[0], 'Offline', 'Resource is powered off')
-        #         return "success"
         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
         api.SetResourceLiveStatus(context.remote_endpoints[0].fullname.split('/')[0], 'Offline', 'Resource is powered off')
         return "success"
@@ -88,17 +68,6 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
 
         :type context drivercontext.ResourceRemoteCommandContext
         """
-        # df = self._connect_amazon(context)
-        # instance = self._get_instance(context, self._get_connected_instance_id(context), ec2)
-        # if instance is not None:
-        #     start_response = instance.start()
-        #     instance.wait_until_running()
-        #
-        #     if 200 <= start_response["ResponseMetadata"]["HTTPStatusCode"] < 300:
-        #         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
-        #         api.SetResourceLiveStatus(context.remote_endpoints[0].fullname.split('/')[0], 'Online', 'Resource is powered on')
-        #         return "success"
-        #     return "fail"
         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
         api.SetResourceLiveStatus(context.remote_endpoints[0].fullname.split('/')[0], 'Online', 'Resource is powered on')
         return "success"
@@ -181,7 +150,7 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
 
         # self._endpoint = 'fake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpoint'
         # self._app_arn = 'fake_app_arn'
-        # session_arn = 'fake_session_arn'
+        # self._session_arn = 'fake_session_arn'
 
         result = DeployResult(app_name, self._session_arn, context.resource.fullname, "", 60, True, True, True, True, False)
         rv = set_command_result(result, False)
@@ -221,6 +190,9 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
             return "Deleted instance {0} Successfully".format(context.remote_endpoints[0].fullname)
         else:
             return "Failed to delete instance"
+
+    def upload_app_connected(self, context, ports, apk_url, apk_asset_updates):
+        return self.upload_app(context, ports, apk_url, apk_asset_updates)
 
     def upload_app(self, context, ports, apk_url, apk_asset_updates):
         r = requests.get(apk_url)
@@ -343,5 +315,5 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
 
         if status != 'COMPLETED':
             return "fail"
-            # raise Exception('session did not end within 5 minutes')
+            # # raise Exception('session did not end within 5 minutes')
         return "success"

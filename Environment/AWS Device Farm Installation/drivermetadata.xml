@@ -1,7 +1,7 @@
 <Driver Description="OpenStack Deploy App From Image" MainClass="driver.DeployFromImage" Name="OpenStack VM From Image" Version="1.1.90 ">
     <Layout>
         <Category Name="App Management">
-            <Command Description="" DisplayName="install_device_farm_app" Name="install_device_farm_app" Tags="allow_shared" />
+            <Command Description="" DisplayName="Install Device Farm App" Name="Install" Tags="allow_shared" />
         </Category>
     </Layout>
 </Driver>

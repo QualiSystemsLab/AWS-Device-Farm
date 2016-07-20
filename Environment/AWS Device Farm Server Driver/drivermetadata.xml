@@ -6,6 +6,7 @@
       </Category>
       <Category Name="Installation">
           <Command Description="Install App on AWS Device Farm device" DisplayName="Install App on AWS Device Farm device" Name="upload_app" Tags="allow_shared" />
+          <Command Description="Install App on AWS Device Farm device" DisplayName="Install App on AWS Device Farm device" Name="upload_app_connected" Tags="remote_app_management,allow_shared" />
       </Category>
     <Category Name="Connectivity">
       <Command Description="Refresh the IP of an Instance" DisplayName="Refresh IP" EnableCancellation="true" Name="remote_refresh_ip" Tags="remote_connectivity,allow_shared" />
