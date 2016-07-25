@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 
@@ -154,20 +155,56 @@ function f1() {
 }
 
 </script>
-<style type="text/css">
-#phoneimage { zoom: 50%; }
-</style>
+<script src="./static/jquery-2.2.4.min.js"></script>
+<script>
+    $(function(){
+        $(window).resize(function(){
+            fit();
+        }).trigger("resize");
+        function fit(){
+            var zoom = 100;
+            var fitHeight = 0;
+            var padding = 170;
+            var windowHeight = $(window).innerHeight();
+            console.log(windowHeight)
+            var imageHeight = $(".screen").height();
+            if(imageHeight + padding > windowHeight)
+            {
+                fitHeight = windowHeight - padding;
+                zoom = Math.round((windowHeight-padding)/(imageHeight+padding)*100);
+                console.log(zoom)
+                $(".screen").css({"zoom":zoom + "%"});
+            }
+                
+                
+        }
+    })    
+</script>
+<link href="./static/style.css" rel="stylesheet" />
 </head>
 <body onload="main1()">
-<img id="phoneimage" src="quali.jpg"/>
-<div id="status">No status</div>
-<div id="rate">No rate</div>
-<input type="button" value="Back" id="back" />
-<input type="button" value="Home" id="home" />
-
+<header>
+    <img src="./static/logo.png"/>
+    <h1>AWS Device Farm</h1>
+    <h2>Device Emulator</h2>
+    <div id="status">No status</div>
+    <div id="rate">No rate</div>    
+</header>
+<div class="container">
+<div class="device">
+    <div class="screen">
+        <img id="phoneimage" src="./static/transparent.png"/>        
+    </div>
+    <div class="toolbar">
+        <input type="button" value="Back" id="back" />
+        <input type="button" value="Home" id="home" />
+    </div>
+</div>
+</div>
 <!--
 <input type="button" value="Stop" id="stop" />
 <input type="button" value="Click to Start" id="test" onclick="f1()" />
 -->
+
 </body>
 </html>
