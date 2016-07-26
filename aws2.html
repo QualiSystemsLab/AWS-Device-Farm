@@ -13,14 +13,7 @@ function docommand(g1) {
 }
 
 function main1() {
-    document.querySelector('#phoneimage').ondragstart = function() { return false; };
-    document.querySelector('#phoneimage').onmousedown = function(e) {
-        console.log('mousedown at (' + e.x*2 + ',' + e.y*2 + ')')
-
-        gg['xdown'] = e.x
-        gg['ydown'] = e.y
-    }
-    document.querySelector('#back').onmouseup=function(e) {
+    document.querySelector('#back').onmouseup=function(evt) {
         console.log('back button')
         docommand(function(csock) {
             msg = '{\n"message": "KeyMessage",\n"parameters": {\n"keycode":4\n}\n}\n'
@@ -28,7 +21,7 @@ function main1() {
             csock.send(msg)
         })
     }
-    document.querySelector('#home').onmouseup=function(e) {
+    document.querySelector('#home').onmouseup=function(evt) {
         console.log('home button')
         docommand(function(csock) {
             msg = '{\n"message": "KeyMessage",\n"parameters": {\n"keycode":3\n}\n}\n'
@@ -37,34 +30,6 @@ function main1() {
         })
     }
 
-    document.querySelector('#phoneimage').onmouseup=function(e) {
-        console.log('mouseup at (' + e.x*2 + ',' + e.y*2 + ')')
-
-        docommand(function(csock) {
-            if(!gg['xdown'] || !gg['ydown'] || (gg['xdown'] == e.x && gg['ydown'] == e.y)) {
-                msg = '{\n"message": "TouchDownMessage",\n"parameters": {\n"x": ' + e.x*2 + ',\n"y": ' + e.y*2 + ',\n"pointer": 1,\n"pressure": 100\n}\n}\n'
-                console.log('try to send ' + msg)
-                csock.send(msg)
-
-                msg = '{\n"message": "TouchUpMessage",\n"parameters": {\n"pointer": 1\n}\n}\n'
-                console.log('try to send ' + msg)
-                csock.send(msg)
-            } else {
-                msg = '{\n"message": "TouchDownMessage",\n"parameters": {\n"x": ' + gg['xdown']*2 + ',\n"y": ' + gg['ydown']*2 + ',\n"pointer": 1,\n"pressure": 100\n}\n}\n'
-                console.log('try to send ' + msg)
-                csock.send(msg)
-
-                msg = '{\n"message": "TouchMoveMessage",\n"parameters": {\n"x": ' + e.x*2 + ',\n"y": ' + e.y*2 + ',\n"pointer": 1,\n"pressure": 100\n}\n}\n'
-                console.log('try to send ' + msg)
-                csock.send(msg)
-
-                msg = '{\n"message": "TouchUpMessage",\n"parameters": {\n"pointer": 1\n}\n}\n'
-                console.log('try to send ' + msg)
-                csock.send(msg)
-            }
-        })
-
-    }
 
     endpoint = window.location.href.split('endpoint=')[1]
 
@@ -178,11 +143,56 @@ function f1() {
                 
                 
         }
+        $('#phoneimage').on('dragstart', function (e) {
+            e.preventDefault();  // cancel the native drag event chain
+            console.log("dragstart");
+        });
+        $('#phoneimage').mousedown(function(evt) {
+            var x = evt.offsetX /  $('.screen').css('zoom')
+            var y = evt.offsetY /  $('.screen').css('zoom')
+            console.log('mousedown at (' + x + ',' + y + ')')
+
+            gg['xdown'] = x
+            gg['ydown'] = y
+        })
+
+        $('#phoneimage').mouseup(function(evt) {
+            var x = evt.offsetX /  $('.screen').css('zoom')
+            var y = evt.offsetY /  $('.screen').css('zoom')
+            console.log('mouseup at (' + x + ',' + y + ')')
+
+            docommand(function(csock) {
+                if(!gg['xdown'] || !gg['ydown'] || (gg['xdown'] == x && gg['ydown'] == y)) {
+                    msg = '{\n"message": "TouchDownMessage",\n"parameters": {\n"x": ' + x + ',\n"y": ' + y + ',\n"pointer": 1,\n"pressure": 100\n}\n}\n'
+                    console.log('try to send ' + msg)
+                    csock.send(msg)
+
+                    msg = '{\n"message": "TouchUpMessage",\n"parameters": {\n"pointer": 1\n}\n}\n'
+                    console.log('try to send ' + msg)
+                    csock.send(msg)
+                } else {
+                    msg = '{\n"message": "TouchDownMessage",\n"parameters": {\n"x": ' + gg['xdown'] + ',\n"y": ' + gg['ydown'] + ',\n"pointer": 1,\n"pressure": 100\n}\n}\n'
+                    console.log('try to send ' + msg)
+                    csock.send(msg)
+
+                    msg = '{\n"message": "TouchMoveMessage",\n"parameters": {\n"x": ' + x + ',\n"y": ' + y + ',\n"pointer": 1,\n"pressure": 100\n}\n}\n'
+                    console.log('try to send ' + msg)
+                    csock.send(msg)
+
+                    msg = '{\n"message": "TouchUpMessage",\n"parameters": {\n"pointer": 1\n}\n}\n'
+                    console.log('try to send ' + msg)
+                    csock.send(msg)
+                }
+            })
+        })
+
+
     })    
 </script>
 <link href="./static/style.css" rel="stylesheet" />
 </head>
 <body onload="main1()">
+<!-- <body> -->
 <header>
     <img src="./static/logo.png"/>
     <h1>AWS Device Farm</h1>
@@ -193,7 +203,8 @@ function f1() {
 <div class="container">
 <div class="device">
     <div class="screen">
-        <img id="phoneimage" src="./static/transparent.png"/>        
+       <img id="phoneimage" src="./static/transparent.png"/>        
+        <!-- <img id="phoneimage" src="./static/tablet.jpg"/> -->
     </div>
     <div class="toolbar">
         <input type="button" value="Back" id="back" />
