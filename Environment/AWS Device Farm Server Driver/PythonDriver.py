@@ -24,6 +24,7 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         """
         ctor must be without arguments, it is created with reflection at run time
         """
+        pass
 
     def initialize(self, context):
         pass
@@ -263,10 +264,15 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         except:
             resid = context.remote_reservation.reservation_id
 
+
         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
+        api.WriteMessageToReservationOutput(resid, 'upload_app called')
+        api.WriteMessageToReservationOutput(resid, 'context=' + str(dir(context)))
+        api.WriteMessageToReservationOutput(resid, 'remote_endpoints=' + ', '.join([x.fullname for x in context.remote_endpoints]))
+        api.WriteMessageToReservationOutput(resid, 'resource=' + str(context.resource.fullname))
+
 
         res = api.GetReservationDetails(resid).ReservationDescription
-        api.WriteMessageToReservationOutput(resid, 'upload_app called')
 
         z = zipfile.ZipFile(f.name, mode="a", compression=zipfile.ZIP_DEFLATED)
 
@@ -356,7 +362,6 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         #     f.write(str(uid) + '\n\n')
 
         # session_arn = json.loads(context.remote_endpoints[0].vmdata_json)['UID']
-        api.WriteMessageToReservationOutput(resid, 'context=' + str(context))
 
         session_arn = api.GetResourceDetails(context.remote_endpoints[0].fullname.split('/')[0]).VmDetails.UID
         df_session.install_to_remote_access_session(appArn=app_arn, remoteAccessSessionArn=session_arn)
@@ -364,24 +369,31 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
 
     def destroy_vm_only(self, context, ports):
         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
+        api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'Stopping remote device session...')
 
         session_arn = api.GetResourceDetails(context.remote_endpoints[0].fullname.split('/')[0]).VmDetails.UID
 
         df_session = self._connect_amazon(context)
-        df_session.stop_remote_access_session(
-            arn=session_arn
-        )
+        try:
+            df_session.stop_remote_access_session(
+                arn=session_arn
+            )
 
-        status = ''
-        for _ in range(0, 30):
-            o = df_session.get_remote_access_session(arn=session_arn)
-            status = o['remoteAccessSession']['status']
-            if status == 'COMPLETED':
-                break
-            sleep(10)
+            status = 'none'
+            o = 'no data'
+            for _ in range(0, 30):
+                o = df_session.get_remote_access_session(arn=session_arn)
+                status = o['remoteAccessSession']['status']
+                api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'Status: %s' % status)
+                if status == 'COMPLETED':
+                    break
+                sleep(10)
 
-        if status != 'COMPLETED':
-            api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'Remote device session ended with an error: %s' % str(o))
+            if status != 'COMPLETED':
+                api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'Remote device session ended with an error: %s' % str(o))
+                return "fail"
+                # # raise Exception('session did not end within 5 minutes')
+        except Exception as e:
+            # api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'Failed to stop remote session: %s' % str(e))
             return "fail"
-            # # raise Exception('session did not end within 5 minutes')
         return "success"
