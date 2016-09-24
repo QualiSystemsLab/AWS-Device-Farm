@@ -20,15 +20,26 @@ api = CloudShellAPISession(host=connectivity['serverAddress'],
                            domain=reservation['domain'])
 
 # Temporary implementation bypassing the installation service:
-cp_resource = [x['value']
-               for x in resource['appData']['installationService']['attributes']
-               if x['name'] == 'AWS EC2'][0]
+try:
+    cp_resource = [x['value']
+                   for x in resource['appData']['installationService']['attributes']
+                   if x['name'] == 'AWS EC2'][0]
+    deploy_inputs = [InputNameValue(x['name'].lower().replace(' ', '_'), x['value'])
+                     for x in resource['appData']['installationService']['attributes']
+                     if x['name'] != 'AWS EC2']
+except:
+    cp_resource = resource['attributes']['AWS EC2']
+    deploy_inputs = [InputNameValue(name.lower().replace(' ', '_'), value)
+                     for name, value in resource['attributes'].iteritems()
+                     if name != 'AWS EC2']
 
-deploy_inputs = [InputNameValue(x['name'].lower().replace(' ', '_'), x['value'])
-                 for x in resource['appData']['installationService']['attributes']
-                 if x['name'] != 'AWS EC2']
-
-result = api.ExecuteCommand(resid, cp_resource, "Resource", "upload_app", deploy_inputs)
+try:
+    result = api.ExecuteCommand(resid, cp_resource, "Resource", "upload_app", deploy_inputs)
+except:
+    result = api.ExecuteResourceConnectedCommand(resid, service, "upload_app_connected", "remote_app_management", [
+        resource['attributes']['APK URL'],
+        resource['attributes']['APK Asset Updates'],
+    ])
 
 # Version that calls the installation service from this script
 # For this to work, update datamodel.xml on model "AWS Mobile Device Installation":

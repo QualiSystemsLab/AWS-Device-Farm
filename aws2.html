@@ -84,7 +84,9 @@ function f1() {
 		}, 10)
 		*/
     }
-
+    newcsock(endpoint, 0)
+}
+function newcsock(endpoint, retries) {
     csock = new WebSocket(endpoint + "&path=control")
     gg['csock'] = csock
 
@@ -106,11 +108,21 @@ function f1() {
         gg['csock'] = null
         clearInterval(gg['poll3'])
         gg['poll3'] = null
+        document.querySelector('#status').innerHTML+='Control socket closed, REOPENING in 1 second<br>'
+        if(retries<3) {
+            setTimeout(function() {
+                newcsock(endpoint, retries+1)
+            }, 1000)
+        } else {
+            document.querySelector('#status').innerHTML+='<b>Maximum retries exceeded. Close this page, run function <i>Refresh GUI Link</i> on the mobile device resource in the CloudShell reservation, and relaunch the GUI.</b><br>'
+        }
+        
     }
     csock.onerror = function(event) {
         console.log(event)
         console.log('Control socket error')
         gg['csock'] = null
+        document.querySelector('#status').innerHTML+='Control socket ERROR<br>' + 'Last update:' + new Date() + '<br>'
     }
     csock.onmessage = function(event) {
         console.log('Control socket received ' + event.data)
@@ -196,7 +208,7 @@ function f1() {
 <header>
     <img src="./static/logo.png"/>
     <h1>AWS Device Farm</h1>
-    <h2>Device Emulator</h2>
+    <h2>Remote Device Session</h2>
     <div id="status">No status</div>
     <div id="rate">No rate</div>    
 </header>

@@ -24,26 +24,51 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         """
         ctor must be without arguments, it is created with reflection at run time
         """
-        self._endpoint = ''
-        self._app_arn = ''
-        self._project_arn = ''
-        self._session_arn = ''
 
     def initialize(self, context):
         pass
+
+    def _set_endpoint_attributes(self, context):
+        """
+        :type context drivercontext.ResourceRemoteCommandContext
+        """
+        api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
+        # session_arn = json.loads(context.remote_endpoints[0].vmdata_json)['UID']
+        # api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'vmdata_json = ' + context.remote_endpoints[0].vmdata_json)
+
+        det = api.GetResourceDetails(context.remote_endpoints[0].fullname.split('/')[0])
+        oldep1 = 'not_set'
+        oldep2 = 'not_set'
+        for attr in det.ResourceAttributes:
+            if attr.Name == 'AWSRemoteDeviceEndpoint':
+                oldep1 = attr.Value
+            if attr.Name == 'AWSRemoteDeviceEndpoint2':
+                oldep2 = attr.Value
+        session_arn = det.VmDetails.UID
+
+        df_session = self._connect_amazon(context)
+        o = df_session.get_remote_access_session(arn=session_arn)
+        status = o['remoteAccessSession']['status']
+        if status != 'RUNNING':
+            raise Exception('Cannot refresh endpoint when session is not RUNNING: ' + str(o))
+
+        endpoint = o['remoteAccessSession']['endpoint']
+        ep1 = endpoint[0:400]
+        ep2 = endpoint[400:]
+
+        api.SetAttributeValue(context.remote_endpoints[0].fullname.split('/')[0], 'AWSRemoteDeviceEndpoint', ep1)
+        api.SetAttributeValue(context.remote_endpoints[0].fullname.split('/')[0], 'AWSRemoteDeviceEndpoint2', ep2)
+
+        api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id,
+                                            'Set endpoint attributes:\nOld 1: %s\nOld 2: %s\nNew 1: %s\nNew 2: %s\n' % (oldep1, oldep2, ep1, ep2))
+
 
     def remote_refresh_ip(self, context, cancellation_context, ports):
         """
         :type context drivercontext.ResourceRemoteCommandContext
         """
-        api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
-        # api.UpdateResourceAddress(context.remote_endpoints[0].fullname.split('/')[0],address)
 
-        ep1 = self._endpoint[0:400]
-        ep2 = self._endpoint[400:]
-
-        api.SetAttributeValue(context.remote_endpoints[0].fullname.split('/')[0], 'AWSRemoteDeviceEndpoint', ep1)
-        api.SetAttributeValue(context.remote_endpoints[0].fullname.split('/')[0], 'AWSRemoteDeviceEndpoint2', ep2)
+        self._set_endpoint_attributes(context)
 
         return 'noaddr'
 
@@ -100,9 +125,34 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         df = session.client('devicefarm')
         return df
 
-    def deploy_from_device_farm(self, context, device_model, inbound_ports, instance_type, outbound_ports, app_name):
-        # # api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
+    def show_status(self, context, ports):
+        api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
+        df_session = self._connect_amazon(context)
+        session_arn = api.GetResourceDetails(context.remote_endpoints[0].fullname.split('/')[0]).VmDetails.UID
+        o = df_session.get_remote_access_session(arn=session_arn)
+        return 'Remote access session status: ' + str(o)
 
+    def refresh_gui_link(self, context, ports):
+        self._set_endpoint_attributes(context)
+
+        # api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
+        # api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'ports:' + str(ports))
+        # api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'resource:' + context.resource.fullname)
+        # api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'remote resource:' + context.remote_endpoints[0].fullname)
+        #
+        # df_session = self._connect_amazon(context)
+        # o = df_session.get_remote_access_session(arn=self._session_arn)
+        # status = o['remoteAccessSession']['status']
+        # if status == 'RUNNING':
+        #     self._endpoint = o['remoteAccessSession']['endpoint']
+        #     return str(ports)
+        # else:
+        #     raise Exception('Status is not RUNNING: ' + str(o))
+
+    def deploy_from_device_farm(self, context, device_model, inbound_ports, instance_type, outbound_ports, app_name):
+        api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
+
+        api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Deploying %s...' % device_model)
         df_session = self._connect_amazon(context)
 
         device_arn = ''
@@ -123,36 +173,42 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         if not device_arn:
             raise Exception('Device not found matching model selection <' + device_model + '>')
 
-        self._project_arn = df_session.list_projects()['projects'][0]['arn']
+        project_arn = df_session.list_projects()['projects'][0]['arn']
+
+        api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Creating remote access session...')
 
         o = df_session.create_remote_access_session(
             deviceArn=device_arn,
-            projectArn=self._project_arn,
+            projectArn=project_arn,
             configuration={
                 'billingMethod': 'METERED'
             },
             name=app_name.replace(' ', '_')
         )
 
-        self._session_arn = o['remoteAccessSession']['arn']
+        session_arn = o['remoteAccessSession']['arn']
 
         status = ''
         for _ in range(0, 30):
-            o = df_session.get_remote_access_session(arn=self._session_arn)
+            o = df_session.get_remote_access_session(arn=session_arn)
             status = o['remoteAccessSession']['status']
+            api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Status: %s' % status)
             if status == 'RUNNING':
-                self._endpoint = o['remoteAccessSession']['endpoint']
+                # endpoint = o['remoteAccessSession']['endpoint']
                 break
+            if 'ERROR' in status or 'FAIL' in status or 'COMPLETED' in status:
+                api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Remote device session ended with an error: %s' % str(o))
+                raise Exception('Remote device session ended with an error: ' + str(o))
             sleep(10)
 
         if status != 'RUNNING':
-            raise Exception('Remote device session did not start within 5 minutes')
+            raise Exception('Remote device session did not start within 5 minutes: ' + str(o))
 
         # self._endpoint = 'fake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpoint'
         # self._app_arn = 'fake_app_arn'
         # self._session_arn = 'fake_session_arn'
 
-        result = DeployResult(app_name, self._session_arn, context.resource.fullname, "", 60, True, True, True, True, False)
+        result = DeployResult(app_name, session_arn, context.resource.fullname, "", 60, True, True, True, True, False)
         rv = set_command_result(result, False)
         # # with open(r'c:\temp\a.txt', 'a') as f:
         # #     f.write(rv + '\n\n')
@@ -202,9 +258,15 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         r.close()
         f.close()
 
+        try:
+            resid = context.reservation.reservation_id
+        except:
+            resid = context.remote_reservation.reservation_id
+
         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
 
-        res = api.GetReservationDetails(context.reservation.reservation_id).ReservationDescription
+        res = api.GetReservationDetails(resid).ReservationDescription
+        api.WriteMessageToReservationOutput(resid, 'upload_app called')
 
         z = zipfile.ZipFile(f.name, mode="a", compression=zipfile.ZIP_DEFLATED)
 
@@ -246,20 +308,21 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
             signed_apk_data = bytearray(g.read())
 
 
-        api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'upload_app called')
 
-        api.WriteMessageToReservationOutput(context.reservation.reservation_id, f.name)
+        api.WriteMessageToReservationOutput(resid, f.name)
 
         df_session = self._connect_amazon(context)
+
+        project_arn = df_session.list_projects()['projects'][0]['arn']
 
         apk_basename = apk_url.replace('\\', '/').split('/')[-1]
 
         r = df_session.create_upload(contentType='application/octet-stream',
                                      name=apk_basename,
-                                     projectArn=self._project_arn,
+                                     projectArn=project_arn,
                                      type='ANDROID_APP')
         upload_url = r['upload']['url']
-        self._app_arn = r['upload']['arn']
+        app_arn = r['upload']['arn']
 
         r2 = requests.put(upload_url,
                           headers={'Content-Type': 'application/octet-stream'},
@@ -269,7 +332,7 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
 
         status = ''
         for _ in range(0, 30):
-            r = df_session.get_upload(arn=self._app_arn)
+            r = df_session.get_upload(arn=app_arn)
             status = r['upload']['status']
             if status in ['SUCCEEDED', 'FAILED', 'ERROR']:
                 break
@@ -292,7 +355,11 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         #     uid = vmdet.UID
         #     f.write(str(uid) + '\n\n')
 
-        df_session.install_to_remote_access_session(appArn=self._app_arn, remoteAccessSessionArn=self._session_arn)
+        # session_arn = json.loads(context.remote_endpoints[0].vmdata_json)['UID']
+        api.WriteMessageToReservationOutput(resid, 'context=' + str(context))
+
+        session_arn = api.GetResourceDetails(context.remote_endpoints[0].fullname.split('/')[0]).VmDetails.UID
+        df_session.install_to_remote_access_session(appArn=app_arn, remoteAccessSessionArn=session_arn)
         return "success"
 
     def destroy_vm_only(self, context, ports):
@@ -314,6 +381,7 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
             sleep(10)
 
         if status != 'COMPLETED':
+            api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'Remote device session ended with an error: %s' % str(o))
             return "fail"
             # # raise Exception('session did not end within 5 minutes')
         return "success"
