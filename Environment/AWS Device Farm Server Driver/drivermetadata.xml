@@ -12,7 +12,7 @@
       <Command Description="Refresh the IP of an Instance" DisplayName="Refresh IP" EnableCancellation="true" Name="remote_refresh_ip" Tags="remote_connectivity,allow_shared" />
     </Category>
     <Category Name="App Management">
-        <Command Description="" DisplayName="Delete" Name="destroy_vm" Tags="remote_app_management,allow_shared" />
+        <Command Description="" DisplayName="Delete" Name="destroy_vm_only" Tags="remote_app_management,allow_shared" />
         <Command Description="" DisplayName="Status" Name="show_status" Tags="remote_app_management,allow_shared" />
         <Command Description="" DisplayName="Refresh GUI Link" Name="refresh_gui_link" Tags="remote_app_management,allow_shared" />
     </Category>

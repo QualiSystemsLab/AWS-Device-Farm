@@ -237,9 +237,13 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         return "Not Implemented"
 
     def destroy_vm(self, context, ports):
+        # with open(r'c:\programdata\qualisystems\devicefarm.log', 'a') as f:
+        #     f.write('destroy_vm called\n')
         return self.destroy_device(context, ports)
 
     def destroy_device(self, context, ports):
+        # with open(r'c:\programdata\qualisystems\devicefarm.log', 'a') as f:
+        #     f.write('destroy_device called\n')
         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
         destroy_result = self.destroy_vm_only(context, ports)
         if destroy_result == "success":
@@ -249,9 +253,13 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
             return "Failed to delete instance"
 
     def upload_app_connected(self, context, ports, apk_url, apk_asset_updates):
+        # with open(r'c:\programdata\qualisystems\devicefarm.log', 'a') as f:
+        #     f.write('upload_app_connected called\n')
         return self.upload_app(context, ports, apk_url, apk_asset_updates)
 
     def upload_app(self, context, ports, apk_url, apk_asset_updates):
+        # with open(r'c:\programdata\qualisystems\devicefarm.log', 'a') as f:
+        #     f.write('upload_app called\n')
         r = requests.get(apk_url)
         f = tempfile.NamedTemporaryFile(suffix='.apk', delete=False)
 
@@ -368,8 +376,14 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
         return "success"
 
     def destroy_vm_only(self, context, ports):
+        # with open(r'c:\programdata\qualisystems\devicefarm.log', 'a') as f:
+        #     f.write('destroy_vm_only called\n')
         api = CloudShellAPISession(context.connectivity.server_address, domain="Global", token_id=context.connectivity.admin_auth_token, port=context.connectivity.cloudshell_api_port)
-        api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'Stopping remote device session...')
+        try:
+            resid = context.remote_reservation.reservation_id
+        except:
+            resid = context.reservation.reservation_id
+        api.WriteMessageToReservationOutput(resid, 'Stopping remote device session...')
 
         session_arn = api.GetResourceDetails(context.remote_endpoints[0].fullname.split('/')[0]).VmDetails.UID
 
@@ -384,13 +398,13 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
             for _ in range(0, 30):
                 o = df_session.get_remote_access_session(arn=session_arn)
                 status = o['remoteAccessSession']['status']
-                api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'Status: %s' % status)
+                api.WriteMessageToReservationOutput(resid, 'Status: %s' % status)
                 if status == 'COMPLETED':
                     break
                 sleep(10)
 
             if status != 'COMPLETED':
-                api.WriteMessageToReservationOutput(context.remote_reservation.reservation_id, 'Remote device session ended with an error: %s' % str(o))
+                api.WriteMessageToReservationOutput(resid, 'Remote device session ended with an error: %s' % str(o))
                 return "fail"
                 # # raise Exception('session did not end within 5 minutes')
         except Exception as e:
