@@ -57,8 +57,8 @@
       <file leaf-file-name="PythonDriver.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Environment/AWS Device Farm Server Driver/PythonDriver.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
-              <caret line="239" column="64" selection-start-line="239" selection-start-column="50" selection-end-line="239" selection-end-column="64" />
+            <state relative-caret-position="680">
+              <caret line="214" column="28" selection-start-line="214" selection-start-column="28" selection-end-line="214" selection-end-column="28" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -69,8 +69,8 @@
       <file leaf-file-name="drivermetadata.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Environment/AWS Device Farm Server Driver/drivermetadata.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+            <state relative-caret-position="476">
+              <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -91,8 +91,8 @@
       <file leaf-file-name="datamodel.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Environment/AWS Shell/DataModel/datamodel.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="390">
-              <caret line="226" column="109" selection-start-line="226" selection-start-column="104" selection-end-line="226" selection-end-column="109" />
+            <state relative-caret-position="214">
+              <caret line="300" column="28" selection-start-line="300" selection-start-column="28" selection-end-line="300" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -129,10 +129,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/aws2.html" />
-        <option value="$PROJECT_DIR$/Environment/AWS Shell/DataModel/datamodel.xml" />
         <option value="$PROJECT_DIR$/Environment/AWS Shell/Resource Scripts/install_device_farm_app.py" />
         <option value="$PROJECT_DIR$/Environment/AWS Device Farm Server Driver/devicefarm/2015-06-23/service-2.json" />
         <option value="$PROJECT_DIR$/Environment/AWS Device Farm Server Driver/drivermetadata.xml" />
+        <option value="$PROJECT_DIR$/Environment/AWS Shell/DataModel/datamodel.xml" />
         <option value="$PROJECT_DIR$/Environment/AWS Device Farm Server Driver/PythonDriver.py" />
       </list>
     </option>
@@ -815,14 +815,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Environment/AWS Shell/DataModel/datamodel.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="390">
-          <caret line="226" column="109" selection-start-line="226" selection-start-column="104" selection-end-line="226" selection-end-column="109" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Environment/AWS Device Farm Deployment/driver.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="380">
@@ -863,16 +855,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Environment/AWS Device Farm Server Driver/drivermetadata.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+        <state relative-caret-position="476">
+          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Environment/AWS Shell/DataModel/datamodel.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="214">
+          <caret line="300" column="28" selection-start-line="300" selection-start-column="28" selection-end-line="300" selection-end-column="28" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Environment/AWS Device Farm Server Driver/PythonDriver.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="239" column="64" selection-start-line="239" selection-start-column="50" selection-end-line="239" selection-end-column="64" />
+        <state relative-caret-position="680">
+          <caret line="214" column="28" selection-start-line="214" selection-start-column="28" selection-end-line="214" selection-end-column="28" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>

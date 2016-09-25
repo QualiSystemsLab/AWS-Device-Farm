@@ -176,34 +176,46 @@ class AWSPythonConnectedDriver(ResourceDriverInterface):
 
         project_arn = df_session.list_projects()['projects'][0]['arn']
 
-        api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Creating remote access session...')
+        running = False
+        retries = 0
+        while not running:
+            try:
+                api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Creating remote access session...')
 
-        o = df_session.create_remote_access_session(
-            deviceArn=device_arn,
-            projectArn=project_arn,
-            configuration={
-                'billingMethod': 'METERED'
-            },
-            name=app_name.replace(' ', '_')
-        )
+                o = df_session.create_remote_access_session(
+                    deviceArn=device_arn,
+                    projectArn=project_arn,
+                    configuration={
+                        'billingMethod': 'METERED'
+                    },
+                    name=app_name.replace(' ', '_')
+                )
 
-        session_arn = o['remoteAccessSession']['arn']
+                session_arn = o['remoteAccessSession']['arn']
 
-        status = ''
-        for _ in range(0, 30):
-            o = df_session.get_remote_access_session(arn=session_arn)
-            status = o['remoteAccessSession']['status']
-            api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Status: %s' % status)
-            if status == 'RUNNING':
-                # endpoint = o['remoteAccessSession']['endpoint']
+                status = ''
+                for _ in range(0, 30):
+                    o = df_session.get_remote_access_session(arn=session_arn)
+                    status = o['remoteAccessSession']['status']
+                    api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Status: %s' % status)
+                    if status == 'RUNNING':
+                        # endpoint = o['remoteAccessSession']['endpoint']
+                        running = True
+                        break
+                    if 'ERROR' in status or 'FAIL' in status or 'COMPLETED' in status:
+                        api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Remote device session ended with an error: %s' % str(o))
+                        raise Exception('Remote device session ended with an error: ' + str(o))
+                    sleep(10)
+
+                if status != 'RUNNING':
+                    raise Exception('Remote device session did not start within 5 minutes: ' + str(o))
                 break
-            if 'ERROR' in status or 'FAIL' in status or 'COMPLETED' in status:
-                api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Remote device session ended with an error: %s' % str(o))
-                raise Exception('Remote device session ended with an error: ' + str(o))
-            sleep(10)
-
-        if status != 'RUNNING':
-            raise Exception('Remote device session did not start within 5 minutes: ' + str(o))
+            except Exception as e:
+                retries += 1
+                if retries < 5:
+                    api.WriteMessageToReservationOutput(context.reservation.reservation_id, 'Remote device failed, RETRYING...')
+                else:
+                    raise Exception('Could not start a remote session in 5 tries. Check the AWS Device Farm console or try another hardware selection')
 
         # self._endpoint = 'fake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpointfake_endpoint'
         # self._app_arn = 'fake_app_arn'

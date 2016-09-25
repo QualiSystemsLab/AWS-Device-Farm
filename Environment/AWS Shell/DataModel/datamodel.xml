@@ -304,7 +304,7 @@
         <AttributeValue Name="Lab" Value="Global" />
       </AttributeValues>
       <Models>
-        <ResourceModel Name="AWS Regional Server" Description="" SupportsConcurrentCommands="false">
+        <ResourceModel Name="AWS Regional Server" Description="" SupportsConcurrentCommands="true">
           <AttachedAttributes>
             <AttachedAttribute Name="AWS default subnet" IsOverridable="true" IsLocal="true">
               <AllowedValues />
